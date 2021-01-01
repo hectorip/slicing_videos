@@ -22,7 +22,6 @@ def stamp_to_seconds(ts):
     return seconds
 
 with open("v1.csv", "r") as f:
-    # print(f.read())
     reader = csv.reader(f)
     for line in reader:
         time_start = stamp_to_seconds(line[0])
@@ -34,7 +33,9 @@ for i, ts in enumerate(timestamps[:-1]):
     time_end = timestamps[i+1][1] - 1
     ts.append(time_end)
 
+timestamps[-1].append(duration)
 print(timestamps)
-# ffmpeg_extract_subclip("full.mp4", 60, 300, targetname="cut.mp4")
-
+for ts in timestamps:
+    print("Slicing: " + ts[0])
+    ffmpeg_extract_subclip("videos/dt.mp4",ts[1], ts[2], targetname="videos/{}.mp4".format(ts[0]))
 
