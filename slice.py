@@ -25,6 +25,9 @@ def stamp_to_seconds(ts):
     return seconds
 
 def slice_video(video_name, index_file):
+    """
+    Cuts video in the parts described in the index file
+    """
     clip_c = VideoFileClip(video_name)
     intro_clip = VideoFileClip("videos/thedojo_intro.mp4")
     duration =  clip_c.duration
