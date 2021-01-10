@@ -24,6 +24,7 @@ def stamp_to_seconds(ts):
         unit += 1
     return seconds
 
+
 def slice_video(video_name, index_file):
     """
     Cuts video in the parts described in the index file
@@ -42,7 +43,6 @@ def slice_video(video_name, index_file):
             timestamps.append([line[1].strip(), int(line[2].strip()), time_start])
 
 
-    l = len(timestamps)
     for i, ts in enumerate(timestamps[:-1]):
         time_end = timestamps[i+1][2] - 1
         ts.append(time_end)
@@ -68,25 +68,15 @@ def slice_video(video_name, index_file):
 
         cut_video_name = "{}/cuts/{}.mp4".format(destination_folder, ts[0])
         final_name = "{}/final/{}.mp4".format(destination_folder, ts[0])
-        final_name_ = "{}/final/{}_t.mp4".format(destination_folder, ts[0])
         ffmpeg_extract_subclip(video_name, ts[2], ts[3], targetname=cut_video_name)
         clip = VideoFileClip(cut_video_name)
         d =  clip.duration
         clip = vfx.fadeout(clip, duration=5)
-        # clip = afx.audio_fadeout(clip, duration=5)
-        # clip = clip.set_duration(d)
-        # clip.write_videofile("t1.mp4", fps=30, preset="ultrafast", )
         clip = clip.set_duration(d-2)
         final_clip = concatenate_videoclips([intro_clip, clip, intro_clip], method="compose")
-        # final_clip = final_clip.set_duration(final_clip.duration-4.2)
-        # print("Duration {}".format(d))
-        # clip.write_videofile(final_name_, fps=d, preset="medium", threads=24, codec="libx264")
-        # c2 = VideoFileClip(final_name_)
-        # print("Duration 2: {}".format(c2.duration))
         final_clip.write_videofile(final_name, fps=24, preset="medium", threads=24, codec="libx264")
         final_clip.close()
         clip.close()
-        # exit()
     clip_c.close()
     intro_clip.close()
 
