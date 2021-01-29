@@ -36,7 +36,7 @@ def slice_video(video_name, index_file):
     timestamps = []
 
     with open(index_file, "r") as f:
-        reader = csv.reader(f)
+        reader = csv.reader(f, quotechar='"', quoting=csv.QUOTE_ALL, skipinitialspace=True)
         for line in reader:
             time_start = stamp_to_seconds(line[0])
             timestamps.append([line[1].strip(), int(line[2].strip()), time_start])
