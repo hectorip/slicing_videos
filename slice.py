@@ -30,6 +30,7 @@ def slice_video(video_name, index_file):
     """
     clip_c = VideoFileClip(video_name)
     intro_clip = VideoFileClip("videos/thedojo_intro.mp4")
+    outro_clip = VideoFileClip("videos/thedojo_outro.mp4")
     duration =  clip_c.duration
 
     print(duration)
@@ -70,14 +71,15 @@ def slice_video(video_name, index_file):
         ffmpeg_extract_subclip(video_name, ts[2], ts[3], targetname=cut_video_name)
         clip = VideoFileClip(cut_video_name)
         d =  clip.duration
-        clip = vfx.fadeout(clip, duration=5)
-        clip = clip.set_duration(d-2)
-        final_clip = concatenate_videoclips([intro_clip, clip, intro_clip], method="compose")
-        final_clip.write_videofile(final_name, fps=24, preset="medium", threads=24, codec="libx264")
+        # clip = vfx.fadeout(clip, duration=5)
+        clip = clip.set_duration(d-4)
+        final_clip = concatenate_videoclips([intro_clip, clip, outro_clip ,intro_clip], padding=1)
+        final_clip.write_videofile(final_name, fps=30, preset="ultrafast", threads=8)
         final_clip.close()
         clip.close()
     clip_c.close()
     intro_clip.close()
+    outro_clip.close()
 
 
 @begin.start
