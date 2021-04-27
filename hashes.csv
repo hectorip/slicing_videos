@@ -1,0 +1,19 @@
+00:00, Intro, 0
+01:15, Seguridad en MD5, 1
+01:40, ¿Qué es un hash?, 1
+02:52, Imagen y Preimagen, 1
+05:59, Resistencia a las preimágenes, 0
+08:22, Resistencia a la segunda preimagen, 0
+09:21, Resistencia a las colisiones, 0
+13:20, Diferencia entre cifrado y hashing, 1
+17:20, ¿Qué tan roto está MD5?, 1
+29:35, No todas las cadenas están en los diccionarios, 0
+32:43, Las funciones comunes de hasheo son fáciles de malusar, 1
+45:37, Puntos principales para guardar contraseñas, 0
+47:28, Hashes desafult de diferentes frameworks web, 0
+55:02, Cifrado de base de datos, 0
+56:57, Cryptyopals Challenge, 0
+59:11, MD5 no sirve para firmas digitales, 0
+1:01:00, ¿Hay un uso práctico para MD5?, 0
+1:05:01, No deberías programar sin framework, 0
+1:07:35, AES es un título, 1
