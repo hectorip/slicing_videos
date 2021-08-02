@@ -24,13 +24,14 @@ def stamp_to_seconds(ts):
     return seconds
 
 
-def slice_video(video_name, index_file):
+def slice_video(video_name, index_file, intro, outro):
     """
     Cuts video in the parts described in the index file
     """
     clip_c = VideoFileClip(video_name)
-    intro_clip = VideoFileClip("videos/thedojo_intro.mp4")
-    outro_clip = VideoFileClip("videos/thedojo_outro.mp4")
+    if intro or outro:
+        intro_clip = VideoFileClip("videos/thedojo_intro.mp4")
+        outro_clip = VideoFileClip("videos/thedojo_outro.mp4")
     duration = clip_c.duration
 
     print(duration)
@@ -41,14 +42,17 @@ def slice_video(video_name, index_file):
             f, quotechar='"', quoting=csv.QUOTE_ALL, skipinitialspace=True
         )
         for line in reader:
-            time_start = stamp_to_seconds(line[0])
-            timestamps.append([line[1].strip(), int(line[2].strip()), time_start])
+            time_range = (stamp_to_seconds(line[0]), stamp_to_seconds(line[1]))
+            # time_end = (stamp_to_seconds(line[1]),)
+            timestamps.append(
+                [
+                    line[2].strip(),
+                    int(line[3].strip()),
+                    stamp_to_seconds(line[0]),
+                    stamp_to_seconds(line[1]),
+                ]
+            )
 
-    for i, ts in enumerate(timestamps[:-1]):
-        time_end = timestamps[i + 1][2] - 1
-        ts.append(time_end)
-
-    timestamps[-1].append(duration)
     print(timestamps)
     # Creating folders
     video_unique_name = video_name.split(".")[-2].split("/")[-1]
@@ -68,23 +72,35 @@ def slice_video(video_name, index_file):
         print("Slicing: " + ts[0])
 
         cut_video_name = "{}/cuts/{}.mp4".format(destination_folder, ts[0])
-        final_name = "{}/final/{}.mp4".format(destination_folder, ts[0])
         ffmpeg_extract_subclip(video_name, ts[2], ts[3], targetname=cut_video_name)
-        clip = VideoFileClip(cut_video_name)
-        d = clip.duration
-        # clip = vfx.fadeout(clip, duration=5)
-        clip = clip.set_duration(d - 4)
-        final_clip = concatenate_videoclips(
-            [intro_clip, clip, outro_clip, intro_clip], padding=1
-        )
-        final_clip.write_videofile(final_name, fps=30, preset="ultrafast", threads=8)
-        final_clip.close()
-        clip.close()
+
+        if intro or outro:
+
+            final_name = "{}/final/{}.mp4".format(destination_folder, ts[0])
+
+            clip = VideoFileClip(cut_video_name)
+            d = clip.duration
+            # clip = vfx.fadeout(clip, duration=5)
+            clip = clip.set_duration(d - 4)
+            final_clip = concatenate_videoclips(
+                [intro_clip, clip, outro_clip, intro_clip], padding=1
+            )
+            final_clip.write_videofile(
+                final_name, fps=30, preset="ultrafast", threads=8
+            )
+            final_clip.close()
+            clip.close()
     clip_c.close()
-    intro_clip.close()
-    outro_clip.close()
+    if intro or outro:
+        intro_clip.close()
+        outro_clip.close()
 
 
 @begin.start
-def run(video_name="videos/dt.mp4", index_file="videos/dt/index.csv"):
-    slice_video(video_name, index_file)
+def run(
+    video_name="videos/dt.mp4",
+    index_file="videos/dt/index.csv",
+    intro=False,
+    outro=False,
+):
+    slice_video(video_name, index_file, intro, outro)
