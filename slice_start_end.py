@@ -72,8 +72,12 @@ def slice_video(video_name, index_file, intro, outro):
         print("Slicing: " + ts[0])
 
         cut_video_name = "{}/cuts/{}.mp4".format(destination_folder, ts[0])
-        ffmpeg_extract_subclip(video_name, ts[2], ts[3], targetname=cut_video_name)
-
+        print(video_name, ts[2], ts[3], cut_video_name)
+        # ffmpeg_extract_subclip(video_name, ts[2], ts[3], targetname=cut_video_name)
+        clip = clip_c.subclip(ts[2], ts[3])
+        clip.write_videofile(
+            cut_video_name, fps=30, preset="ultrafast", threads=16
+        )
         if intro or outro:
 
             final_name = "{}/final/{}.mp4".format(destination_folder, ts[0])
